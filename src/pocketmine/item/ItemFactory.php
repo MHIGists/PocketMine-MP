@@ -372,7 +372,7 @@ class ItemFactory{
 
 		$item->setCount($count);
 		if($tags !== null){
-			$item->setNamedTag($tags);
+			$item->deserializeCompoundTag($tags);
 		}
 		return $item;
 	}

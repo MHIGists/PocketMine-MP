@@ -83,7 +83,7 @@ class GiveCommand extends VanillaCommand{
 				return true;
 			}
 
-			$item->setNamedTag($tags);
+			$item->deserializeCompoundTag($tags);
 		}
 
 		//TODO: overflow

@@ -30,6 +30,7 @@ use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\BadPacketException;
 use pocketmine\network\mcpe\protocol\types\CommandOriginData;
 use pocketmine\network\mcpe\protocol\types\EntityLink;
@@ -135,10 +136,10 @@ class NetworkBinaryStream extends BinaryStream{
 		$auxValue = (($item->getMeta() & 0x7fff) << 8) | $item->getCount();
 		$this->putVarInt($auxValue);
 
-		if($item->hasNamedTag()){
+		if(($tag = $item->getNamedTag()) !== null){
 			$this->putLShort(0xffff);
 			$this->putByte(1); //TODO: some kind of count field? always 1 as of 1.9.0
-			$this->put((new NetworkNbtSerializer())->write($item->getNamedTag()));
+			$this->put((new NetworkNbtSerializer())->write($tag));
 		}else{
 			$this->putLShort(0);
 		}

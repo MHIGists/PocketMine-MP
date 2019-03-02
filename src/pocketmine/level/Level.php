@@ -1725,17 +1725,12 @@ class Level implements ChunkManager, Metadatable{
 			}
 
 			if($player->isAdventure(true) and !$ev->isCancelled()){
-				$tag = $item->getNamedTagEntry("CanDestroy");
 				$canBreak = false;
-				if($tag instanceof ListTag){
-					foreach($tag as $v){
-						if($v instanceof StringTag){
-							$entry = ItemFactory::fromString($v->getValue());
-							if($entry->getBlock()->isSameType($target)){
-								$canBreak = true;
-								break;
-							}
-						}
+				foreach($item->getCanDestroy() as $v){
+					$entry = ItemFactory::fromString($v);
+					if($entry->getBlock()->isSameType($target)){
+						$canBreak = true;
+						break;
 					}
 				}
 
@@ -1875,16 +1870,11 @@ class Level implements ChunkManager, Metadatable{
 			$ev = new BlockPlaceEvent($player, $hand, $blockReplace, $blockClicked, $item);
 			if($player->isAdventure(true) and !$ev->isCancelled()){
 				$canPlace = false;
-				$tag = $item->getNamedTagEntry("CanPlaceOn");
-				if($tag instanceof ListTag){
-					foreach($tag as $v){
-						if($v instanceof StringTag){
-							$entry = ItemFactory::fromString($v->getValue());
-							if($entry->getBlock()->isSameType($blockClicked)){
-								$canPlace = true;
-								break;
-							}
-						}
+				foreach($item->getCanPlaceOn() as $v){
+					$entry = ItemFactory::fromString($v);
+					if($entry->getBlock()->isSameType($blockClicked)){
+						$canPlace = true;
+						break;
 					}
 				}
 

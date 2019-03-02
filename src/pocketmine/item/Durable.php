@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace pocketmine\item;
 
 use pocketmine\item\enchantment\Enchantment;
-use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\CompoundTag;
 use function lcg_value;
 use function min;
 
@@ -32,6 +32,8 @@ abstract class Durable extends Item{
 
 	/** @var int */
 	protected $damage = 0;
+	/** @var bool */
+	private $unbreakable = false;
 
 	public function getMeta() : int{
 		return $this->damage;
@@ -42,7 +44,7 @@ abstract class Durable extends Item{
 	 * @return bool
 	 */
 	public function isUnbreakable() : bool{
-		return $this->getNamedTag()->getByte("Unbreakable", 0) !== 0;
+		return $this->unbreakable;
 	}
 
 	/**
@@ -51,7 +53,8 @@ abstract class Durable extends Item{
 	 * @param bool $value
 	 */
 	public function setUnbreakable(bool $value = true) : void{
-		$this->setNamedTagEntry(new ByteTag("Unbreakable", $value ? 1 : 0));
+		$this->unbreakable = $value;
+		//TODO: fluent?
 	}
 
 	/**
@@ -125,5 +128,15 @@ abstract class Durable extends Item{
 	 */
 	public function isBroken() : bool{
 		return $this->damage >= $this->getMaxDurability();
+	}
+
+	public function deserializeCompoundTag(CompoundTag $tag) : void{
+		parent::deserializeCompoundTag($tag);
+		$this->unbreakable = $tag->getByte("Unbreakable", 0) !== 0;
+	}
+
+	public function serializeCompoundTag(CompoundTag $tag) : void{
+		parent::serializeCompoundTag($tag);
+		$tag->setByte("Unbreakable", $this->unbreakable ? 1 : 0);
 	}
 }

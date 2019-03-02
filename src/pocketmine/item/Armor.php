@@ -27,6 +27,7 @@ namespace pocketmine\item;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\ProtectionEnchantment;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\utils\Binary;
 use pocketmine\utils\Color;
@@ -37,6 +38,9 @@ abstract class Armor extends Durable{
 
 	public const TAG_CUSTOM_COLOR = "customColor"; //TAG_Int
 
+	/** @var Color|null */
+	protected $customColor = null;
+
 	public function getMaxStackSize() : int{
 		return 1;
 	}
@@ -46,20 +50,16 @@ abstract class Armor extends Durable{
 	 * @return Color|null
 	 */
 	public function getCustomColor() : ?Color{
-		if($this->getNamedTag()->hasTag(self::TAG_CUSTOM_COLOR, IntTag::class)){
-			return Color::fromARGB(Binary::unsignInt($this->getNamedTag()->getInt(self::TAG_CUSTOM_COLOR)));
-		}
-
-		return null;
+		return $this->customColor;
 	}
 
 	/**
 	 * Sets the dyed colour of this armour piece. This generally only applies to leather armour.
-	 *
+	 * TODO: make this fluent?
 	 * @param Color $color
 	 */
-	public function setCustomColor(Color $color) : void{
-		$this->setNamedTagEntry(new IntTag(self::TAG_CUSTOM_COLOR, Binary::signInt($color->toARGB())));
+	public function setCustomColor(?Color $color) : void{
+		$this->customColor = $color;
 	}
 
 	/**
@@ -98,5 +98,19 @@ abstract class Armor extends Durable{
 		}
 
 		return 0;
+	}
+
+	public function deserializeCompoundTag(CompoundTag $tag) : void{
+		parent::deserializeCompoundTag($tag);
+		if($tag->hasTag(self::TAG_CUSTOM_COLOR, IntTag::class)){
+			$this->customColor = Color::fromARGB(Binary::unsignInt($tag->getInt(self::TAG_CUSTOM_COLOR)));
+		}
+	}
+
+	public function serializeCompoundTag(CompoundTag $tag) : void{
+		parent::serializeCompoundTag($tag);
+		if($this->customColor !== null){
+			$tag->setInt(self::TAG_CUSTOM_COLOR, Binary::signInt($this->customColor->toARGB()));
+		}
 	}
 }

@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\item;
 
+use pocketmine\nbt\tag\CompoundTag;
+
 class WrittenBook extends WritableBook{
 
 	public const GENERATION_ORIGINAL = 0;
@@ -33,6 +35,13 @@ class WrittenBook extends WritableBook{
 	public const TAG_GENERATION = "generation"; //TAG_Int
 	public const TAG_AUTHOR = "author"; //TAG_String
 	public const TAG_TITLE = "title"; //TAG_String
+
+	/** @var int */
+	private $generation = self::GENERATION_ORIGINAL;
+	/** @var string */
+	private $author = "";
+	/** @var string */
+	private $title = "";
 
 	public function __construct(){
 		Item::__construct(self::WRITTEN_BOOK, 0, "Written Book");
@@ -49,11 +58,12 @@ class WrittenBook extends WritableBook{
 	 * @return int
 	 */
 	public function getGeneration() : int{
-		return $this->getNamedTag()->getInt(self::TAG_GENERATION, -1);
+		return $this->generation;
 	}
 
 	/**
 	 * Sets the generation of a book.
+	 * TODO: make this fluent
 	 *
 	 * @param int $generation
 	 */
@@ -61,9 +71,7 @@ class WrittenBook extends WritableBook{
 		if($generation < 0 or $generation > 3){
 			throw new \InvalidArgumentException("Generation \"$generation\" is out of range");
 		}
-		$namedTag = $this->getNamedTag();
-		$namedTag->setInt(self::TAG_GENERATION, $generation);
-		$this->setNamedTag($namedTag);
+		$this->generation = $generation;
 	}
 
 	/**
@@ -74,18 +82,16 @@ class WrittenBook extends WritableBook{
 	 * @return string
 	 */
 	public function getAuthor() : string{
-		return $this->getNamedTag()->getString(self::TAG_AUTHOR, "");
+		return $this->author;
 	}
 
 	/**
 	 * Sets the author of this book.
-	 *
+	 * TODO: make this fluent
 	 * @param string $authorName
 	 */
 	public function setAuthor(string $authorName) : void{
-		$namedTag = $this->getNamedTag();
-		$namedTag->setString(self::TAG_AUTHOR, $authorName);
-		$this->setNamedTag($namedTag);
+		$this->author = $authorName;
 	}
 
 	/**
@@ -94,17 +100,29 @@ class WrittenBook extends WritableBook{
 	 * @return string
 	 */
 	public function getTitle() : string{
-		return $this->getNamedTag()->getString(self::TAG_TITLE, "");
+		return $this->title;
 	}
 
 	/**
 	 * Sets the author of this book.
-	 *
+	 * TODO: make this fluent
 	 * @param string $title
 	 */
 	public function setTitle(string $title) : void{
-		$namedTag = $this->getNamedTag();
-		$namedTag->setString(self::TAG_TITLE, $title);
-		$this->setNamedTag($namedTag);
+		$this->title = $title;
+	}
+
+	public function deserializeCompoundTag(CompoundTag $tag) : void{
+		parent::deserializeCompoundTag($tag);
+		$this->generation = $tag->getInt(self::TAG_GENERATION, $this->generation);
+		$this->author = $tag->getString(self::TAG_AUTHOR, $this->author);
+		$this->title = $tag->getString(self::TAG_TITLE, $this->title);
+	}
+
+	public function serializeCompoundTag(CompoundTag $tag) : void{
+		parent::serializeCompoundTag($tag);
+		$tag->setInt(self::TAG_GENERATION, $this->generation);
+		$tag->setString(self::TAG_AUTHOR, $this->author);
+		$tag->setString(self::TAG_TITLE, $this->title);
 	}
 }
