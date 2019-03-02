@@ -137,6 +137,8 @@ abstract class Durable extends Item{
 
 	public function serializeCompoundTag(CompoundTag $tag) : void{
 		parent::serializeCompoundTag($tag);
-		$tag->setByte("Unbreakable", $this->unbreakable ? 1 : 0);
+		if($this->unbreakable){
+			$tag->setByte("Unbreakable", 1);
+		}
 	}
 }
