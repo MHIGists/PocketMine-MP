@@ -113,4 +113,11 @@ abstract class Armor extends Durable{
 			$tag->setInt(self::TAG_CUSTOM_COLOR, Binary::signInt($this->customColor->toARGB()));
 		}
 	}
+
+	public function __clone(){
+		parent::__clone();
+		if($this->customColor !== null){
+			$this->customColor = clone $this->customColor;
+		}
+	}
 }

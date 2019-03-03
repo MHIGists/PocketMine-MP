@@ -115,4 +115,9 @@ class Banner extends Item{
 			$tag->setTag($patterns);
 		}
 	}
+
+	public function __clone(){
+		parent::__clone();
+		$this->patterns = $this->patterns->map(function($e){ return clone $e; });
+	}
 }
