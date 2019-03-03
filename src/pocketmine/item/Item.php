@@ -40,7 +40,6 @@ use pocketmine\nbt\NbtDataException;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\tag\NamedTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
@@ -183,8 +182,6 @@ class Item implements ItemIds, \JsonSerializable{
 	protected $id;
 	/** @var int */
 	protected $meta;
-	/** @var CompoundTag|null */
-	private $nbt = null;
 	/** @var int */
 	protected $count = 1;
 	/** @var string */
@@ -930,8 +927,6 @@ class Item implements ItemIds, \JsonSerializable{
 	}
 
 	public function __clone(){
-		if($this->nbt !== null){
-			$this->nbt = clone $this->nbt;
-		}
+
 	}
 }
