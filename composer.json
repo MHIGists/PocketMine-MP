@@ -39,7 +39,7 @@
       "pocketmine/callback-validator": "^1.0.2",
       "pocketmine/classloader": "dev-master",
       "pocketmine/color": "^0.2.0",
-      "pocketmine/errorhandler": "^0.3.0",
+      "pocketmine/errorhandler": "^0.4.0",
       "pocketmine/log": "^0.3.0",
       "pocketmine/log-pthreads": "^0.2.0",
       "pocketmine/math": "^0.3.0",
